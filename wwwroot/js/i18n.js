@@ -33,6 +33,7 @@ class i18n {
         "osc-triggermode-fall": "下降沿",
         "osc-triggermode-edge": "双沿",
         "osc-trigger-voltage": "触发电压 (V)",
+        "site-msg-failed-to-retrieve-status": "无法获取设备信息。请连接设备后刷新重试。",
         "osc-msg-invalid-timebase": "不合理的单格时间:{time}",
         "osc-msg-too-long-timebase": "单格时间太长:{time}",
         "osc-msg-too-short-timebase": "单格时间太短:{time}",
@@ -48,6 +49,44 @@ class i18n {
         "osc-msg-catch-data-fail": "获取数据失败: {data.error}",
         "osc-msg-start-fail": "启动失败: {data.error}",
         "osc-msg-stop-fail": "未能正常停止: {data.error}",
+        "supply-positive-channel": "正通道",
+        "supply-output-voltage": "输出电压 (V)",
+        "supply-negative-channel": "负通道",
+        "supply-msg-invalid-value": "不合理的电压设置。",
+        "supply-msg-too-high-vol": "{EngineeringValue.To(value)}V 电压过高。",
+        "supply-msg-false-pos-neg-set": "{EngineeringValue.To(value)}V 应当为 {isNeg ? \"negative\" : \"positive\"}.",
+        "supply-msg-change-vol-fail": "改变电压失败: {data.error}",
+        "wave-channel": "通道{ch}",
+        "wave-type": "类型",
+        "wave-frequency": "频率 (Hz)",
+        "wave-amplitude": "峰值 (V)",
+        "wave-offset": "偏置 (V)",
+        "wave-svmme": "对称 (%)",
+        "wave-phase": "初相 (deg)",
+        "wave-type-dc": "直流",
+        "wave-type-sine": "正弦波",
+        "wave-type-square": "方波",
+        "wave-type-triangle": "三角波",
+        "wave-type-ramp-up": "锯齿波 (向上)",
+        "wave-type-ramp-down": "锯齿波 (向下)",
+        "wave-type-noise": "噪声",
+        "wave-type-pulse": "脉冲",
+        "wave-type-trapezium": "梯形波",
+        "wave-type-sinepower": "交流",
+        "wave-msg-unexpected-channel": "通道{ch}不合理。",
+        "wave-msg-invalid-frequency": "请输入正确的频率。",
+        "wave-msg-too-high-frequency": "{EngineeringValue.To(value)}Hz 频率过高。",
+        "wave-msg-not-positive-frequency": "{EngineeringValue.To(value)}Hz 应为正数。",
+        "wave-msg-invalid-amp": "请输入正确的幅值。",
+        "wave-msg-too-high-amp": "{EngineeringValue.To(value)}V 幅值过高。",
+        "wave-msg-too-low-amp": "{EngineeringValue.To(value)}V 幅值过低。",
+        "wave-msg-invalid-offset": "请输入正确的偏置。",
+        "wave-msg-too-high-offset": "{EngineeringValue.To(value)}V 偏置过高。",
+        "wave-msg-too-low-offset": "{EngineeringValue.To(value)}V 偏置过低。",
+        "wave-msg-invalid-svmme": "请输入正确的对称度。",
+        "wave-msg-too-high-svmme": "{EngineeringValue.To(value)}V 对称度过高。",
+        "wave-msg-too-low-svmme": "{EngineeringValue.To(value)}V 对称度过低。",
+        "wave-msg-invlid-phase": "请输入正确的相位",
     }
 
     static English = {
@@ -84,6 +123,7 @@ class i18n {
         "osc-triggermode-fall": "Fall",
         "osc-triggermode-edge": "Either",
         "osc-trigger-voltage": "Trigger voltage (V)",
+        "site-msg-failed-to-retrieve-status": "Failed to retrieve device status. Please connect the device and refresh to try again.",
         "osc-msg-invalid-timebase": "Invalid timebase: {time}",
         "osc-msg-too-long-timebase": "Too long timebase: {time}",
         "osc-msg-too-short-timebase": "Too short timebase: {time}",
@@ -99,6 +139,44 @@ class i18n {
         "osc-msg-catch-data-fail": "Failed to get data: {data.error}",
         "osc-msg-start-fail": "Failed to start: {data.error}",
         "osc-msg-stop-fail": "Failed to stop: {data.error}",
+        "supply-positive-channel": "Positive Channel",
+        "supply-output-voltage": "Output Voltage (V)",
+        "supply-negative-channel": "Negative Channel",
+        "supply-msg-invalid-value": "Invalid value.",
+        "supply-msg-too-high-vol": "{EngineeringValue.To(value)}V is too high.",
+        "supply-msg-false-pos-neg-set": "{EngineeringValue.To(value)}V should be {isNeg ? \"negative\" : \"positive\"}.",
+        "supply-msg-change-vol-fail": "Failed to change voltage: {data.error}",
+        "wave-channel": "Channel {ch}",
+        "wave-type": "Type",
+        "wave-frequency": "Frequency (Hz)",
+        "Wave-amplitude": "Amplitude (V)",
+        "wave-offset": "Offset (V)",
+        "wave-svmme": "Svmme (%)",
+        "wave-phase": "Phase (deg)",
+        "wave-type-dc": "DC",
+        "wave-type-sine": "Sine",
+        "wave-type-square": "Square",
+        "wave-type-triangle": "Triangle",
+        "wave-type-ramp-up": "RampUp",
+        "wave-type-ramp-down": "RampDown",
+        "wave-type-noise": "Noise",
+        "wave-type-pulse": "Pulse",
+        "wave-type-trapezium": "Trapezium",
+        "wave-type-sinepower": "SinePower",
+        "wave-msg-unexpected-channel": "Unexpected Channel {ch}.",
+        "wave-msg-invalid-frequency": "Please Enter Valid Frequency.",
+        "wave-msg-too-high-frequency": "{EngineeringValue.To(value)}Hz is too high.",
+        "wave-msg-not-positive-frequency": "{EngineeringValue.To(value)}Hz should be a positive value.",
+        "wave-msg-invalid-amp": "Please Enter Correct Amplitude.",
+        "wave-msg-too-high-amp": "{EngineeringValue.To(value)}V is too high.",
+        "wave-msg-too-low-amp": "{EngineeringValue.To(value)}V is too low.",
+        "wave-msg-invalid-offset": "Please Enter Correct Offset.",
+        "wave-msg-too-high-offset": "{EngineeringValue.To(value)}V is too high.",
+        "wave-msg-too-low-offset": "{EngineeringValue.To(value)}V is too low.",
+        "wave-msg-invalid-svmme": "Please Enter Correct Svmme.",
+        "wave-msg-too-high-svmme": "{EngineeringValue.To(value)}V is too high.。",
+        "wave-msg-too-low-svmme": "{EngineeringValue.To(value)}V is too low.",
+        "wave-msg-invalid-phase": "Please Enter Correct Phase",
     }
 
     static locale = i18n.English;
@@ -115,7 +193,7 @@ class i18n {
     }
 
     static SetLocale(locale) {
-        if (locale==="zh-CN") {
+        if (locale === "zh-CN") {
             this.locale = i18n.Chinese;
         } else {
             this.locale = i18n.English;
@@ -145,6 +223,8 @@ $.ajax({
     },
     error: function (data) {
         i18n.SetLocale("en");
-        setTimeout(() => {mdui.alert("Failed to get language. Is the server running properly?");}, 500);
+        setTimeout(() => {
+            mdui.alert("Failed to get language. Is the server running properly?");
+        }, 500);
     }
 })

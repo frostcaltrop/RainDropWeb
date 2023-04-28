@@ -14,8 +14,6 @@ public class ApiController : ControllerBase
     // This is to prevent multiple threads from reading the oscilloscope data at the same time.
     private static readonly Mutex OscilloscopeReadMutex = new();
 
-    private static bool _isAdjustingSupplyVoltage;
-
     [Route("Language")]
     public IActionResult GetLanguage()
     {
@@ -74,7 +72,7 @@ public class ApiController : ControllerBase
     {
         Response.ContentType = "application/json";
 
-        return Task.FromResult<IActionResult>(Ok(new[] { RainDrop.CurrentDevice }));
+        return Task.FromResult<IActionResult>(Ok(new { success = true, data = RainDrop.GetStatus() }));
     }
 
     [Route("Status")]
@@ -99,19 +97,21 @@ public class ApiController : ControllerBase
     [Route("Oscilloscope/Channel/{channel:int}")]
     [HttpPost]
     public async Task<IActionResult> SetOscilloscopeChannel([FromRoute] int channel, [FromForm] bool enabled,
-        [FromForm] bool is25V)
+        [FromForm] float offset, [FromForm] float amplitude)
     {
         Response.ContentType = "application/json";
 
         if (channel is not (0 or 1))
             return Ok(new { success = false, error = "Invalid channel." });
+        
+        if (amplitude <= 0)
+            return Ok(new {success=false, error=Localization.Localize("OSCILLOSCOPE_AMPLITUDE_POSITIVE")});
 
         try
         {
             await Task.Run(() =>
             {
-                RainDrop.SetOscilloscopeChannelState(channel == 1, enabled);
-                RainDrop.SetOscilloscopeChannelRange(channel == 1, is25V ? 25 : 5);
+                RainDrop.SetOscilloscopeChannel(channel == 1, enabled, offset, amplitude);
             });
         }
         catch (Exception e)
@@ -257,11 +257,6 @@ public class ApiController : ControllerBase
     {
         Response.ContentType = "application/json";
 
-        if (_isAdjustingSupplyVoltage)
-            return Ok(new { success = false, error = "Another adjustment is in progress." });
-
-        _isAdjustingSupplyVoltage = true;
-
         try
         {
             await Task.Run(() =>
@@ -282,10 +277,6 @@ public class ApiController : ControllerBase
         catch (Exception e)
         {
             return Ok(new { success = false, error = e.Message });
-        }
-        finally
-        {
-            _isAdjustingSupplyVoltage = false;
         }
 
         return Ok(new { success = true });

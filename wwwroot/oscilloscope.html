@@ -37,7 +37,7 @@
         <a class="mdui-list-item mdui-ripple" href="/Index" i18n-key="site-home"></a>
         <a class="mdui-list-item mdui-ripple" href="/Oscilloscope" i18n-key="site-osc"></a>
         <a class="mdui-list-item mdui-ripple" href="/Supply" i18n-key="site-supply"></a>
-        <a class="mdui-list-item mdui-ripple" href="wave-generator.html" i18n-key="site-osc"></a>
+        <a class="mdui-list-item mdui-ripple" href="wave-generator.html" i18n-key="site-wave"></a>
     </div>
 </div>
 
@@ -218,14 +218,14 @@
 
                     <div class="mdui-col-xs-6">
                         <div class="mdui-textfield">
-                            <label for="channel-${c}-voltage" class="mdui-textfield-label">单格电压 (V)</label>
+                            <label for="channel-${c}-voltage" class="mdui-textfield-label">${i18n.Localize("osc-range")}</label>
                             <input class="mdui-textfield-input" type="text" value="2" id="channel-${c}-voltage">
                         </div>
                     </div>
 
                     <div class="mdui-col-xs-6">
                         <div class="mdui-textfield">
-                            <label for="channel-${c}-offset" class="mdui-textfield-label">直流偏置 (V)</label>
+                            <label for="channel-${c}-offset" class="mdui-textfield-label">${i18n.Localize("osc-offset")}</label>
                             <input class="mdui-textfield-input" type="text" value="0" id="channel-${c}-offset">
                         </div>
                     </div>
@@ -407,6 +407,64 @@
             setInterval(() => {
                 this.resize();
             }, 100);
+
+            // Retrieve device status
+            $.ajax({
+                url: "/Api/Current",
+                type: "GET",
+                success: (data) => {
+                    if (data.success !== true || data.data.name === "") {
+                        mdui.alert(i18n.Localize("site-msg-failed-to-retrieve-status"));
+                        return;
+                    }
+
+                    const osc = data.data.oscilloscope;
+
+                    for (let ch = 1; ch <= 2; ++ch) {
+                        $(`#channel-${ch}-enable`).prop("checked", osc.channels[ch - 1].enabled);
+                        $(`#channel-${ch}-voltage`).val(EngineeringValue.To(osc.channels[ch - 1].amplitude / this._voltageGridCount * 2));
+                        $(`#channel-${ch}-offset`).val(EngineeringValue.To(osc.channels[ch - 1].offset));
+                    }
+
+                    this.enabled = [
+                        osc.channels[0].enabled, osc.channels[1].enabled
+                    ];
+
+                    this.amplitudePerGrid = [
+                        osc.channels[0].amplitude / this._voltageGridCount * 2,
+                        osc.channels[1].amplitude / this._voltageGridCount * 2
+                    ];
+
+                    this.offset = [
+                        osc.channels[0].offset, osc.channels[1].offset
+                    ];
+
+                    $("#time-per-grid").val(EngineeringValue.To(osc.timebase / this._timeGridCount));
+                    this.timePerGrid = osc.timebase / this._timeGridCount;
+
+                    $("#sampling-frequency").val(EngineeringValue.To(osc.frequency));
+                    this.frequency = osc.frequency;
+
+                    $("#samples").val(osc.samples);
+                    this.samples = osc.samples;
+
+                    $("#average").val(osc.average);
+                    this.average = osc.average;
+
+                    this.triggerAutoTimeout = true;
+
+                    $("#trigger-source").val(osc.trigger.source);
+                    this.triggerSource = osc.trigger.source;
+
+                    $("#trigger-voltage").val(EngineeringValue.To(osc.trigger.level));
+                    this.triggerVoltage = osc.trigger.level;
+
+                    $("#trigger-mode").val(osc.trigger.condition);
+                    this.triggerCondition = osc.trigger.condition;
+
+                    this.redraw();
+                }
+            });
         }
 
         getPreferredFrequency() {
@@ -464,13 +522,13 @@
 
             ctx.fillStyle = "yellow";
             for (let i = 1; i < this._voltageGridCount; ++i) {
-                const text = EngineeringValue.To(-(i - this._voltageGridCount / 2) * this.amplitudePerGrid[0] + this.offset[0]);
+                const text = EngineeringValue.To(-(i - this._voltageGridCount / 2) * this.amplitudePerGrid[0] - this.offset[0]);
                 ctx.fillText(text, 5, Math.round(i * this._voltageGridSize + 4));
             }
 
             ctx.fillStyle = "cyan";
             for (let i = 1; i < this._voltageGridCount; ++i) {
-                const text = EngineeringValue.To(-(i - this._voltageGridCount / 2) * this.amplitudePerGrid[1] + this.offset[1]);
+                const text = EngineeringValue.To(-(i - this._voltageGridCount / 2) * this.amplitudePerGrid[1] - this.offset[1]);
                 const textWidth = ctx.measureText(text).width;
                 ctx.fillText(text, this._canvas.width - textWidth - 5, Math.round(i * this._voltageGridSize + 4));
             }
@@ -533,7 +591,8 @@
                     url: `/Api/Oscilloscope/Channel/${channel}`,
                     data: {
                         enabled: this.enabled[channel],
-                        is25V: this.amplitudePerGrid[channel] * this._voltageGridCount / 2 >= 5,
+                        offset: this.offset[channel],
+                        amplitude: this.amplitudePerGrid[channel] * this._voltageGridCount / 2,
                     },
                     success: (data) => {
                         if (data.success === false)
