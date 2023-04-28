@@ -2,6 +2,8 @@ class i18n {
     static Chinese = {
         "site-title-bar": "电实验",
         "site-title": "电实验",
+        "site-lang-zh-CN": "中文",
+        "site-lang-en": "English",
         "site-home": "主页",
         "site-osc": "示波器",
         "site-supply": "可调电源",
@@ -20,7 +22,6 @@ class i18n {
         "osc-base": "单格时间 (s)",
         "osc-rate": "采样频率 (Hz)",
         "osc-samples": "采样数",
-        "osc-channel-attribute": "通道{c}属性",
         "osc-range": "单格电压 (V/div)",
         "osc-offset": "直流偏置 (V)",
         "osc-trigger-attribute": "触发属性",
@@ -38,10 +39,10 @@ class i18n {
         "osc-msg-too-low-rate": "{samplingFrequency}Hz 太低，此时示波器不灵敏。",
         "osc-msg-too-high-rate": "{samplingFrequency / 1e6}MHz 过高，示波器不支持。",
         "osc-msg-invalid-voltage": "不合理的电压: {voltage}",
-        "osc-msg-too-low-voltage": "{EngineeringValue.To(voltagePerGrid)}V 太低以至于不能正常显示。",
+        "osc-msg-too-low-voltage": "{value}V 太低以至于不能正常显示。",
         "osc-msg-invalid-offset": "不合理的直流偏置: {offset}.",
         "osc-msg-sync-time-fail": "同步时间失败: {data.error}",
-        "osc-msg-sync-channel-fail": "通道{channel}失败: {data.error}",
+        "osc-msg-sync-channel-fail": "同步通道{channel}失败: {data.error}",
         "osc-msg-sync-trigger-fail": "同步触发失败: {data.error}",
         "osc-msg-catch-data-fail": "获取数据失败: {data.error}",
         "osc-msg-start-fail": "启动失败: {data.error}",
@@ -51,6 +52,8 @@ class i18n {
     static English = {
         "site-title-bar": "RainDrop Command Center",
         "site-title": "RainDrop Command Center",
+        "site-lang-zh-CN": "中文",
+        "site-lang-en": "English",
         "site-home": "Home",
         "site-osc": "Oscilloscope",
         "site-supply": "Power source",
@@ -64,15 +67,14 @@ class i18n {
         "home-msg-disconnected": "Disconnected.",
         "home-msg-connected": "Connected to {device}",
         "home-msg-fail-to-connect": "Failed to connect to {device}: {error}",
-        "osc-device-attribute": "Device Attribute",
+        "osc-device-attribute": "Device attributes",
         "osc-start": "Start",
         "osc-base": "Base (s)",
         "osc-rate": "Rate (Hz)",
         "osc-samples": "Samples",
-        "osc-channel-attribute": "Attribute of Channel{c}",
         "osc-range": "Range (V/div)",
         "osc-offset": "Offset(V)",
-        "osc-trigger-attribute": "Trigger attribute",
+        "osc-trigger-attribute": "Trigger attributes",
         "osc-trigger-source": "Trigger source",
         "osc-channel": "Channel {c}",
         "osc-trigger-mode": "Trigger mode",
@@ -80,15 +82,15 @@ class i18n {
         "osc-triggermode-fall": "Fall",
         "osc-triggermode-edge": "Either",
         "osc-trigger-voltage": "Trigger voltage (V)",
-        "osc-msg-invalid-timebase": "Invalid timebase:{time}",
-        "osc-msg-too-long-timebase": "Too long timebase:{time}",
-        "osc-msg-too-short-timebase": "Too short timebase:{time}",
-        "osc-msg-invalid-rate": "Invalid sampling frequency:{frequency}",
-        "osc-msg-too-low-rate": "{samplingFrequency}Hz is too low and will make the oscilloscope unresponsive.",
-        "osc-msg-too-high-rate": "{samplingFrequency / 1e6}MHz is too high and oscilloscope doesn't support it.",
+        "osc-msg-invalid-timebase": "Invalid timebase: {time}",
+        "osc-msg-too-long-timebase": "Too long timebase: {time}",
+        "osc-msg-too-short-timebase": "Too short timebase: {time}",
+        "osc-msg-invalid-rate": "Invalid sampling frequency: {frequency}",
+        "osc-msg-too-low-rate": "{samplingFrequency}Hz is too low and will make the oscilloscope unresponsive",
+        "osc-msg-too-high-rate": "{samplingFrequency / 1e6}MHz is too high and oscilloscope doesn't support it",
         "osc-msg-invalid-voltage": "Invalid voltage: {voltage}",
-        "osc-msg-too-low-voltage": "{EngineeringValue.To(voltagePerGrid)}V is too low to be accurately displayed.",
-        "osc-msg-invalid-offset": "Invalid offset: {offset}.",
+        "osc-msg-too-low-voltage": "{value}V is too low to be accurately displayed",
+        "osc-msg-invalid-offset": "Invalid offset: {offset}",
         "osc-msg-sync-time-data-error": "Failed to sync time: {data.error}",
         "osc-msg-sync-channel-fail": "Fail to sync channel {channel}: {data.error}",
         "osc-msg-sync-trigger-fail": "Fail to sync trigger: {data.error}",
@@ -97,7 +99,7 @@ class i18n {
         "osc-msg-stop-fail": "Failed to stop: {data.error}",
     }
 
-    static locale = i18n.Chinese;
+    static locale = i18n.English;
 
     static Localize(key) {
         return this.locale[key] ?? key;
@@ -105,8 +107,42 @@ class i18n {
 
     static LocalizeFile() {
         $("[i18n-key]").each(function () {
-            var key = $(this).attr("i18n-key");
+            const key = $(this).attr("i18n-key");
             $(this).html(i18n.Localize(key));
         });
     }
+
+    static SetLocale(locale) {
+        if (locale==="zh-CN") {
+            this.locale = i18n.Chinese;
+        } else {
+            this.locale = i18n.English;
+        }
+    }
+
+    static SetGlobalLocale(locale) {
+        $.ajax({
+            method: "POST",
+            url: "/Api/Language",
+            data: {
+                language: locale
+            },
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    }
 }
+
+$.ajax({
+    method: "GET",
+    url: "/Api/Language",
+    async: false,
+    success: function (data) {
+        i18n.SetLocale(data.language);
+    },
+    error: function (data) {
+        i18n.SetLocale("en");
+        setTimeout(() => {mdui.alert("Failed to get language. Is the server running properly?");}, 500);
+    }
+})
